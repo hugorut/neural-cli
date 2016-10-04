@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 class NeuralNet():
     """The main neural network class for training"""
 
-    def __init__(self, X, Y, output="./params", lam=1, maxiter=250):
+    def __init__(self, X, Y, writer, output="./params", lam=1, maxiter=250):
         X = np.matrix(X)
         Y = np.matrix(Y)
         X = normalize(X)
@@ -26,6 +26,7 @@ class NeuralNet():
         self.output = output
         self.params = self.generate_params()
         self.maxiter = maxiter
+        self.writer = writer
 
     """
     [train]
@@ -158,7 +159,7 @@ class NeuralNet():
 
         J += (float(self.lam) / (2 * m)) * (np.sum(np.power(theta1[:,1:], 2)) + np.sum(np.power(theta2[:,1:], 2)))
         if output:
-            print J
+            self.writer.write(J)
 
         for t in range(m):
             a1t = a1[t,:]
@@ -225,7 +226,7 @@ class NeuralNet():
                 correct +=1
 
         accuracy = (correct / examples)  
-        print 'train accuracy = {0}%'.format(accuracy * 100)
+        self.writer.write('train accuracy = {0}%'.format(accuracy * 100))
 
     """
     [test_acc]
@@ -256,7 +257,7 @@ class NeuralNet():
                 correct +=1
 
         accuracy = (correct / len(Y))  
-        print 'test accuracy = {0}%'.format(accuracy * 100)
+        self.writer.write('test accuracy = {0}%'.format(accuracy * 100))
 
     def predict(x):
         """
@@ -322,7 +323,7 @@ class NeuralNet():
         amount = 0
         i = 1
         while i < len(x_train):
-            print "running at index %s of %s" % (i, len(x_train)) 
+            self.writer.write("running at index %s of %s" % (i, len(x_train)))
             params = self.generate_params()
             current_input = x_train[0:i, :] 
             current_output = y_train[0:i, :] 

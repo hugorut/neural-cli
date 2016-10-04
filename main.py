@@ -1,6 +1,9 @@
 import neuralnet
 import numpy as np
 import click
+import writer
+
+writer = writer.Writer()
 
 @click.group()
 def cli():
@@ -26,7 +29,7 @@ def train(x, y, output, lam, maxiter, normalize, verbose):
     X = np.loadtxt(x, delimiter=",",skiprows=1, dtype="float")
     Y = np.loadtxt(y, delimiter=",",skiprows=1, dtype="float")
 
-    nn = neuralnet.NeuralNet(X=X, Y=Y, output=output, lam=lam, maxiter=maxiter)
+    nn = neuralnet.NeuralNet(X=X, Y=Y, writer=writer, output=output, lam=lam, maxiter=maxiter)
     nn.train(verbose=verbose, save=output)
 
 @click.command(options_metavar='<options>')
@@ -37,7 +40,7 @@ def predict(x, params, nomalize=True):
     """Predict an output for a given row of data"""
 
     x = np.loadtxt(open(x,"rb"), delimiter=",",skiprows=1, dtype="float")
-    nn = nn.NeuralNet(X=X, Y=None, output=output, lam=lam, maxiter=maxiter)
+    nn = nn.NeuralNet(X=X, Y=None, writer=writer, output=output, lam=lam, maxiter=maxiter)
 
     nn.set_params(np.loadtxt(open(params,"rb"), delimiter=",",skiprows=1, dtype="float"))
     print nn.predict(x)
