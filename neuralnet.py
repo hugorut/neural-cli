@@ -6,7 +6,6 @@ import csv
 import sys
 from sklearn.preprocessing import normalize
 import matplotlib.pyplot as plt
-import helper
 
 class NeuralNet():
     """The main neural network class for training"""
@@ -39,7 +38,7 @@ class NeuralNet():
                         method='TNC', jac=True, options={'maxiter': maxiter})
 
         if save:
-            writer = csv.writer(open(self.output+".csv", 'w'))
+            writer = csv.writer(open(self.output, 'w'))
             writer.writerow(fmin.x)
 
         return fmin.x
@@ -61,7 +60,7 @@ class NeuralNet():
     @return np.ndarray
     """
     def load_params(self, name):
-        return np.loadtxt(open(name+".csv","rb"), delimiter=",",skiprows=0, dtype="float")
+        return np.loadtxt(open(name,"rb"), delimiter=",",skiprows=0, dtype="float")
 
     """
     [sigmoid]
