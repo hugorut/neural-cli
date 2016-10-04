@@ -11,6 +11,18 @@ class NeuralNet():
     """The main neural network class for training"""
 
     def __init__(self, X, Y, writer, output="./params", lam=1, maxiter=250):
+        """
+        Arguments:
+            X {np.ndarray} -- The training set
+            Y {np.ndarray} -- The expected output of the training set
+            writer {class} -- A writer interface which implements the write() method
+        
+        Keyword Arguments:
+            output {str} -- Where to save the trained params to (default: {"./params"})
+            lam {number} -- Lambda term for regularization (default: {1})
+            maxiter {number} -- Max iterations for minimization (default: {250})
+        """
+
         X = np.matrix(X)
         Y = np.matrix(Y)
         X = normalize(X)
@@ -28,14 +40,18 @@ class NeuralNet():
         self.maxiter = maxiter
         self.writer = writer
 
-    """
-    [train]
-    minimize a cost function defined under backpropogation
-
-    @param bool {verbose} -- should the backpropgation print progress
-    @param bool {save} -- should output of parameters be saved to a file
-    """
     def train(self, verbose=False, save=True):
+        """
+        minimize a cost function defined under backpropogation
+        
+        Keyword Arguments:
+            verbose {bool} -- should the backpropgation print progress (default: {False})
+            save {bool} -- should output of parameters be saved to a file (default: {True})
+        
+        Returns:
+            np.ndarray
+        """
+
         fmin = minimize(fun=self.fit, x0=self.params, args=(self.X, self.Y, verbose),  
                         method='TNC', jac=True, options={'maxiter': self.maxiter})
 
@@ -45,80 +61,99 @@ class NeuralNet():
 
         return fmin.x
 
-    """
-    [generate_params]
-    generate a random sequence of weights for the parameters of the neural network
-
-    @return np.ndarray
-    """
     def generate_params(self):
+        """
+        generate a random sequence of weights for the parameters of the neural network
+
+        Returns:
+            np.ndarray
+        """
+
         return (np.random.random(size=self.hidden_size * (self.input_size + 1) + self.num_labels * (self.hidden_size + 1)) - 0.5) * 0.25
 
-    """
-    [load_params]
-    load parameters from a csv file
-    
-    @param string {name} -- the location of the file
-    @return np.ndarray
-    """
     def load_params(self, name):
+        """
+        load parameters from a csv file
+        
+        Arguments:
+            name {string} -- the location of the file
+        
+        Returns:
+            np.ndarray -- the loaded params
+        """
+
         return np.loadtxt(open(name,"rb"), delimiter=",",skiprows=0, dtype="float")
 
-    """
-    [set_params]
-    
-    set the params
-    
-    @param params {np.ndarray}
-    """
     def set_params(self, params):
+        """
+        set the params
+        
+        Arguments:
+            params {np.ndarray} -- params
+        """
+
         self.params = params
 
-    """
-    [sigmoid]
-    comute the sigmoid activation function
+    def sigmoid(self, z):
+        """
+        compute the sigmoid activation function
+        
+        Arguments:
+            z {mixed} 
+        
+        Returns:
+            number 
+        """
 
-    @return mixed
-    """
-    def sigmoid(self, z):  
         return 1 / (1 + np.exp(-z))
 
-    """
-    [sigmoid]
-    derivative of the sigmoid func
-    @return np.ndarray
-    """
     def sigmoid_gradient(self, z):  
+        """
+        gradient of the sigmoid func
+
+        Arguments:
+            z {mixed}
+        
+        Returns:
+            np.ndarray|float
+        """
+
         return np.multiply(self.sigmoid(z), (1 - self.sigmoid(z)))
 
-    """
-    [reshape_theta]
-    reshape the 1 * n parameter vector into the correct shape for the first and second layers
-
-    @param np.ndarray {params} -- a vector of weights
-    @return array<np.ndarray>
-    """
     def reshape_theta(self, params):
+        """
+        reshape the 1 * n parameter vector into the correct shape for the first and second layers
+        
+        Arguments:
+            params {np.ndarray} -- a vector of weights
+        
+        Returns:
+            theta1 {np.ndarray}
+            theta2 {np.ndarray}
+        """
+
         theta1 = np.matrix(np.reshape(params[:self.hidden_size * (self.input_size + 1)], (self.hidden_size, (self.input_size + 1))))
         theta2 = np.matrix(np.reshape(params[self.hidden_size * (self.input_size + 1):], (self.num_labels, (self.hidden_size + 1))))
 
         return theta1, theta2
 
-    """
-    [feed_forward]
-    run forward propgation using a value of X
-
-    @param np.matrix {X} -- Input set
-    @param np.ndarray {theta1} -- The first layer weights
-    @param np.matrix {theta2} -- The second layer weights
-
-    @return np.ndarray {a1} -- input
-    @return np.ndarray {z2} -- sigmoid of first layer
-    @return np.ndarray {a2} -- activation of second layer
-    @return np.ndarray {z3} -- sigmoid of 
-    @return np.ndarray {h}
-    """
     def feed_forward(self, X, theta1, theta2):  
+        """
+        run forward propgation using a value of X
+        
+        Arguments:
+            X {np.ndarray} -- Input set
+            theta1 {np.ndarray} -- The first layer weights
+            theta2 {np.ndarray} -- The second layer weights
+        
+        Returns:
+            a1 {np.ndarray}
+            z2 {np.ndarray}
+            a2 {np.ndarray}
+            z3 {np.ndarray}
+            h  {np.ndarray}
+        """
+
         m = X.shape[0]
 
         a1 = np.insert(X, 0, values=np.ones(m), axis=1)
@@ -130,19 +165,24 @@ class NeuralNet():
 
         return a1, z2, a2, z3, h
 
-    """
-    [fit]
-    main function to run a single pass on the nn. First run forward propgation to get the error of output given some
-    parameters and then perfom backpropgation to work out the gradient of the function using the given weights.
-
-    @param np.ndarray {params} -- weight layer parameters
-    @param np.matix {X} -- Input matrix
-    @param np.matrix {y} -- Expected output matrix
-
-    @return float64 {J} -- the margin of error with the given weights
-    @return np.ndarray {grad} -- the matrix of gradients for the given weights
-    """
     def fit(self, params, X, y, output=True):  
+        """
+        main function to run a single pass on the nn. First run forward propgation to get the error of output given some
+        parameters and then perfom backpropgation to work out the gradient of the function using the given weights.
+        
+        Arguments:
+            params {np.ndarray} -- weight layer parameters
+            X {np.ndarray} -- Input matrix
+            y {np.ndarray} -- Expected output matrix
+        
+        Keyword Arguments:
+            output {bool} -- print to the writer (default: {True})
+        
+        Returns:
+            J {float64} -- the margin of error with the given weights
+            grad {np.ndarray} -- the matrix of gradients for the given weights
+        """
+
         m = X.shape[0]
         X = np.matrix(X)
         y = np.matrix(y)
@@ -186,31 +226,33 @@ class NeuralNet():
 
         return J, grad
 
-    """
-    [get_cost]
-    get the cost of prediction
-
-    @param np.ndarray {y} -- The expected output
-    @param np.matix {h} -- The perdiction array
-    @param float {minval} -- The minimum value that h projection can be [so no log by zero errors]
-
-    @return float64 {cost} -- the margin of error with the given weights
-    """
     def get_cost(self, y, h, minval=0.0000000001):
+        """
+        get the cost of prediction, the error margin
+        
+        Arguments:
+            y {np.ndarray} -- The expected output
+            h {np.ndarray} -- The prediction array
+        
+        Keyword Arguments:
+            minval {number} -- The minimum value that h projection can be [so no log by zero errors] (default: {0.0000000001})
+        
+        Returns:
+            cos {float64} -- the margin of error with the given weights
+        """
         first_term = np.multiply(-y, np.log(h.clip(minval)))
         second_term = np.multiply((1 - y), np.log(1 - h.clip(minval)))
 
         return np.sum(first_term - second_term)
 
-    """
-    [training_acc]
-    get the accuracy of the learned parameters on the training set
-
-    @param string|None {from_file} -- Whether the parameters should be loaded from file
-
-    @return void
-    """
     def training_acc(self, from_file=None):
+        """
+        get the accuracy of the learned parameters on the training set
+
+        Keyword Arguments:
+            from_file {string} -- Whether the parameters should be loaded from file (default: {None})
+        """
+
         params = self.params
         examples = len(self.Y)
         if from_file:
@@ -228,17 +270,17 @@ class NeuralNet():
         accuracy = (correct / examples)  
         self.writer.write('train accuracy = {0}%'.format(accuracy * 100))
 
-    """
-    [test_acc]
-    get the accuracy of the learned parameters on the test set
+    def test_acc(self, X, Y, from_file=None):
+        """
+        get the accuracy of the learned parameters on the test set
+        
+        Arguments:
+            X {np.ndarray} -- The test set
+            Y {np.ndarray} -- The test set expected output
 
-    @param np.ndarray {X} -- The test set
-    @param np.ndarray {Y} -- The test set expected output
-    @param string|None {from_file} -- Whether the parameters should be loaded from file
-    
-    @return void
-    """
-    def test_acc(self, X, Y, from_file):
+        Keyword Arguments:
+            from_file {string} -- Whether the parameters should be loaded from file (default: {None})
+        """
         X = np.matrix(X)
         Y = np.matrix(Y)
         X = normalize(X)
@@ -274,17 +316,20 @@ class NeuralNet():
         _,_,_,_,h = self.feed_forward(x, theta1, theta2)
         return h
 
-    """
-    [split]
-    split a given set of examples, break this down into a train|validation|test set.
-
-    @param np.ndarray {input} -- The input set
-    
-    @return np.ndarray {train_set}
-    @return np.ndarray {cross_set}
-    @return np.ndarray {test_set}
-    """
     def split(self, input):
+        """[summary]
+        
+        [description]
+        
+        Arguments:
+            input {np.ndarray} -- The input set
+        
+        Returns:
+            train_set {np.ndarray}
+            cross_set {np.ndarray}
+            test_set {np.ndarray}
+        """
+
         length = len(input)
         unit = length/10
 
@@ -297,19 +342,19 @@ class NeuralNet():
 
         return train_set, cross_set, test_set
 
-    """
-    [test]
-    run a diagnostic check on the given data set and expected output. This method plots the the margin of prediction
-    error against the increase in size of training examples. This can be useful to determine what is going wrong 
-    with your hypothesis, i.e. whether it is underfitting or overfitting the training set.
-
-    @param np.ndarray {X} -- The input set
-    @param np.ndarray {Y} -- The expected output
-    @param np.ndarray {step} -- The size of step taken in to increase the dataset
-    
-    @return void
-    """
     def test(self, X, Y, step=10): 
+        """
+        run a diagnostic check on the given data set and expected output. This method plots the the margin of prediction
+        error against the increase in size of training examples. This can be useful to determine what is going wrong 
+        with your hypothesis, i.e. whether it is underfitting or overfitting the training set.
+        
+        Arguments:
+            X {[type]} -- The input set
+            Y {[type]} -- The expected output
+        
+        Keyword Arguments:
+            step {number} -- The size of step taken in to increase the dataset (default: {10})
+        """
         X = normalize(X)
         X = np.matrix(X)
         Y = np.matrix(Y)
