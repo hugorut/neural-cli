@@ -25,6 +25,7 @@ class NeuralNet():
         self.lam = lam
         self.output = output
         self.params = self.generate_params()
+        self.maxiter = maxiter
 
     """
     [train]
@@ -35,7 +36,7 @@ class NeuralNet():
     """
     def train(self, verbose=False, save=True):
         fmin = minimize(fun=self.fit, x0=self.params, args=(self.X, self.Y, verbose),  
-                        method='TNC', jac=True, options={'maxiter': maxiter})
+                        method='TNC', jac=True, options={'maxiter': self.maxiter})
 
         if save:
             writer = csv.writer(open(self.output, 'w'))
@@ -61,6 +62,16 @@ class NeuralNet():
     """
     def load_params(self, name):
         return np.loadtxt(open(name,"rb"), delimiter=",",skiprows=0, dtype="float")
+
+    """
+    [set_params]
+    
+    set the params
+    
+    @param params {np.ndarray}
+    """
+    def set_params(self, params):
+        self.params = params
 
     """
     [sigmoid]
@@ -144,6 +155,7 @@ class NeuralNet():
         delta2 = np.zeros(theta2.shape)
 
         J = self.get_cost(y, h) / m
+
         J += (float(self.lam) / (2 * m)) * (np.sum(np.power(theta1[:,1:], 2)) + np.sum(np.power(theta2[:,1:], 2)))
         if output:
             print J
@@ -245,6 +257,21 @@ class NeuralNet():
 
         accuracy = (correct / len(Y))  
         print 'test accuracy = {0}%'.format(accuracy * 100)
+
+    def predict(x):
+        """
+        predict given a row example
+        
+        Arguments:
+            x {np.array} -- the feature row used to predict and output
+
+        Returns:
+            np.array -- the prediction
+        """
+
+        theta1, theta2 = self.reshape_theta(self.params)
+        _,_,_,_,h = self.feed_forward(x, theta1, theta2)
+        return h
 
     """
     [split]
