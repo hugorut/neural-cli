@@ -342,7 +342,7 @@ class NeuralNet():
 
         return train_set, cross_set, test_set
 
-    def test(self, X, Y, step=10): 
+    def test(self, step=10): 
         """
         run a diagnostic check on the given data set and expected output. This method plots the the margin of prediction
         error against the increase in size of training examples. This can be useful to determine what is going wrong 
@@ -355,13 +355,9 @@ class NeuralNet():
         Keyword Arguments:
             step {number} -- The size of step taken in to increase the dataset (default: {10})
         """
-        X = normalize(X)
-        X = np.matrix(X)
-        Y = np.matrix(Y)
-
         # split into 6/2/2 ratio train/cv/test
-        x_train, x_cross_validation, x_test = split(X)
-        y_train, y_cross_validation, y_test = split(Y)
+        x_train, x_cross_validation, x_test = self.split(self.X)
+        y_train, y_cross_validation, y_test = self.split(self.Y)
 
         error_train = []
         error_val = []
@@ -373,7 +369,7 @@ class NeuralNet():
             current_input = x_train[0:i, :] 
             current_output = y_train[0:i, :] 
 
-            fmin = minimize(fun=self.fit, x0=params, args=(X, y, False),  
+            fmin = minimize(fun=self.fit, x0=params, args=(current_input, current_output, False),  
                             method='TNC', jac=True, options={'maxiter': self.maxiter})
             train_cost, _= self.fit(fmin.x, current_input, current_output, False)
             val_cost, _ = self.fit(fmin.x, x_cross_validation, y_cross_validation, False)

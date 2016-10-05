@@ -39,16 +39,36 @@ def train(x, y, output, lam, maxiter, normalize, verbose):
 def predict(x, params, nomalize=True):
     """Predict an output for a given row of data"""
 
-    x = np.loadtxt(open(x,"rb"), delimiter=",",skiprows=1, dtype="float")
+    x = np.loadtxt(x, delimiter=",",skiprows=0, dtype="float")
     nn = nn.NeuralNet(X=X, Y=None, writer=writer, output=output, lam=lam, maxiter=maxiter)
 
-    nn.set_params(np.loadtxt(open(params,"rb"), delimiter=",",skiprows=1, dtype="float"))
+    nn.set_params(np.loadtxt(params, delimiter=",",skiprows=0, dtype="float"))
     print nn.predict(x)
 
 @click.command(options_metavar='<options>')
-def test():
-    """Test the given network on the train and validation sets"""
-    return "test"
+@click.option("--lam", type=click.FLOAT, default=1, help="The regularization amount [default 1]")
+@click.option("--maxiter", default=250, type=click.INT, help="The maximum iterations for chosen to minimise the cost function [default 250]")
+@click.option("--output", type=click.File('rb'), help="A file path to save the minimised parameters to")
+@click.option("--normalize", default=True, type=click.BOOL, help="Perform normalization on the training set [default true]")
+@click.option("--step", default=10, type=click.INT, help="The increments that the training will increase the set by [default 10]")
+@click.argument("X", type=click.File('rb'))
+@click.argument("Y", type=click.File('rb'))
+def test(x, y, output, lam, maxiter, normalize, step):
+    """Test the given network on the train and validation sets
+    
+    Arguments:\n
+        [X] must be a file path to a CSV which holds your training data\n
+        [Y] must be a file path to a CSV which holds your expected outputs for the training examples
+
+    (neural cli will ommit the first row for column headers for both CSVs)
+    """
+
+    X = np.loadtxt(x, delimiter=",",skiprows=1, dtype="float")
+    Y = np.loadtxt(y, delimiter=",",skiprows=1, dtype="float")
+
+    nn = neuralnet.NeuralNet(X=X, Y=Y, writer=writer, output=output, lam=lam, maxiter=maxiter)
+    nn.test(step)
+
 
 
 cli.add_command(test)
