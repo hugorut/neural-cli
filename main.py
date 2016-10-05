@@ -31,6 +31,7 @@ def train(x, y, output, lam, maxiter, normalize, verbose):
 
     nn = neuralnet.NeuralNet(X=X, Y=Y, writer=writer, output=output, lam=lam, maxiter=maxiter)
     nn.train(verbose=verbose, save=output)
+    nn.accuracy()
 
 @click.command(options_metavar='<options>')
 @click.argument("x", type=click.File('rb'))
@@ -68,7 +69,6 @@ def test(x, y, output, lam, maxiter, normalize, step):
 
     nn = neuralnet.NeuralNet(X=X, Y=Y, writer=writer, output=output, lam=lam, maxiter=maxiter)
     nn.test(step)
-
 
 
 cli.add_command(test)

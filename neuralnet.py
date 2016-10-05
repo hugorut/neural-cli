@@ -40,6 +40,42 @@ class NeuralNet():
         self.maxiter = maxiter
         self.writer = writer
 
+    def set_params(self, params):
+        """
+        set the params
+        
+        Arguments:
+            params {np.ndarray} -- params
+        """
+
+        self.params = params
+
+    def set_X(self, X, norm=True):
+        """
+        Set the training set
+        
+        Arguments:
+            X {np.ndarray} -- The input layer
+        
+        Keyword Arguments:
+            norm {bool} -- Should the input be normalized (default: {True})
+        """
+
+        if norm:
+            X = normalize(X)
+
+        self.X = X
+
+    def set_Y(self, Y):
+        """
+        Set the expected output
+        
+        Arguments:
+            Y {np.ndarray} -- The expected output
+        """
+
+        self.Y = Y
+
     def train(self, verbose=False, save=True):
         """
         minimize a cost function defined under backpropogation
@@ -51,7 +87,7 @@ class NeuralNet():
         Returns:
             np.ndarray
         """
-
+        
         fmin = minimize(fun=self.fit, x0=self.params, args=(self.X, self.Y, verbose),  
                         method='TNC', jac=True, options={'maxiter': self.maxiter})
 
@@ -59,7 +95,7 @@ class NeuralNet():
             writer = csv.writer(open(self.output, 'w'))
             writer.writerow(fmin.x)
 
-        return fmin.x
+        self.params = fmin.x
 
     def generate_params(self):
         """
@@ -83,16 +119,6 @@ class NeuralNet():
         """
 
         return np.loadtxt(open(name,"rb"), delimiter=",",skiprows=0, dtype="float")
-
-    def set_params(self, params):
-        """
-        set the params
-        
-        Arguments:
-            params {np.ndarray} -- params
-        """
-
-        self.params = params
 
     def sigmoid(self, z):
         """
@@ -245,20 +271,13 @@ class NeuralNet():
 
         return np.sum(first_term - second_term)
 
-    def training_acc(self, from_file=None):
+    def accuracy(self, type='train'):
         """
-        get the accuracy of the learned parameters on the training set
-
-        Keyword Arguments:
-            from_file {string} -- Whether the parameters should be loaded from file (default: {None})
+        get the accuracy of the learned parameters on a specific set
         """
 
-        params = self.params
         examples = len(self.Y)
-        if from_file:
-            params = self.load_params(from_file)
-
-        theta1, theta2 = self.reshape_theta(params)
+        theta1, theta2 = self.reshape_theta(self.params)
 
         a1, z2, a2, z3, h = self.feed_forward(self.X, theta1, theta2)  
         y_pred = np.array(np.argmax(h, axis=1))
@@ -268,38 +287,7 @@ class NeuralNet():
                 correct +=1
 
         accuracy = (correct / examples)  
-        self.writer.write('train accuracy = {0}%'.format(accuracy * 100))
-
-    def test_acc(self, X, Y, from_file=None):
-        """
-        get the accuracy of the learned parameters on the test set
-        
-        Arguments:
-            X {np.ndarray} -- The test set
-            Y {np.ndarray} -- The test set expected output
-
-        Keyword Arguments:
-            from_file {string} -- Whether the parameters should be loaded from file (default: {None})
-        """
-        X = np.matrix(X)
-        Y = np.matrix(Y)
-        X = normalize(X)
-
-        params = self.params
-        if from_file:
-            params = self.load_params(from_file)
-
-        theta1, theta2 = self.reshape_theta(params)
-
-        a1, z2, a2, z3, h = self.feed_forward(X, theta1, theta2)  
-        y_pred = np.array(np.argmax(h, axis=1))
-        correct = 0
-        for x in xrange(0, len(Y)):
-            if Y[x, y_pred[x]] == 1:
-                correct +=1
-
-        accuracy = (correct / len(Y))  
-        self.writer.write('test accuracy = {0}%'.format(accuracy * 100))
+        self.writer.write(type +' accuracy = {0}%'.format(accuracy * 100))
 
     def predict(x):
         """
@@ -316,32 +304,6 @@ class NeuralNet():
         _,_,_,_,h = self.feed_forward(x, theta1, theta2)
         return h
 
-    def split(self, input):
-        """[summary]
-        
-        [description]
-        
-        Arguments:
-            input {np.ndarray} -- The input set
-        
-        Returns:
-            train_set {np.ndarray}
-            cross_set {np.ndarray}
-            test_set {np.ndarray}
-        """
-
-        length = len(input)
-        unit = length/10
-
-        train = int(round(unit*6, 0))
-        cross_test = int(round(unit*2, 0))
-
-        train_set = input[0:train, :]
-        cross_set = input[train:train+cross_test, :]
-        test_set = input[train+cross_test: length, :]
-
-        return train_set, cross_set, test_set
-
     def test(self, step=10): 
         """
         run a diagnostic check on the given data set and expected output. This method plots the the margin of prediction
@@ -356,8 +318,8 @@ class NeuralNet():
             step {number} -- The size of step taken in to increase the dataset (default: {10})
         """
         # split into 6/2/2 ratio train/cv/test
-        x_train, x_cross_validation, x_test = self.split(self.X)
-        y_train, y_cross_validation, y_test = self.split(self.Y)
+        x_train, x_cross_validation, x_test = split(self.X)
+        y_train, y_cross_validation, y_test = split(self.Y)
 
         error_train = []
         error_val = []
@@ -388,4 +350,29 @@ class NeuralNet():
         
         plt.xlabel("Iteration")
         plt.show()
-        
+
+def split(self, input):
+    """[summary]
+    
+    [description]
+    
+    Arguments:
+        input {np.ndarray} -- The input set
+    
+    Returns:
+        train_set {np.ndarray}
+        cross_set {np.ndarray}
+        test_set {np.ndarray}
+    """
+
+    length = len(input)
+    unit = length/10
+
+    train = int(round(unit*6, 0))
+    cross_test = int(round(unit*2, 0))
+
+    train_set = input[0:train, :]
+    cross_set = input[train:train+cross_test, :]
+    test_set = input[train+cross_test: length, :]
+
+    return train_set, cross_set, test_set
