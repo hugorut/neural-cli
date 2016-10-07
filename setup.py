@@ -1,7 +1,8 @@
 from distutils.core import setup
 setup(
   name = 'neural-cli',
-  packages = ['neural-cli'], # this must be the same as the name above
+  packages = ['neural-cli'],
+  scripts = ['neural-cli'],
   version = '0.1',
   description = 'A command line neural network',
   author = 'Hugo Rut',
