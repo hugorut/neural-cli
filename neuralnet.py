@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 class NeuralNet():
     """The main neural network class for training"""
 
-    def __init__(self, X, Y, writer, output="./params", lam=1, maxiter=250):
+    def __init__(self, X, Y, writer, output="./params", lam=1, maxiter=250, norm=True):
         """
         Arguments:
             X {np.ndarray} -- The training set
@@ -25,7 +25,8 @@ class NeuralNet():
 
         X = np.matrix(X)
         Y = np.matrix(Y)
-        X = normalize(X)
+        if norm:
+            X = normalize(X)
 
         self.X = X
         self.Y = Y
@@ -40,6 +41,35 @@ class NeuralNet():
         self.maxiter = maxiter
         self.writer = writer
 
+    def set_input_size(input_size):
+        """
+        set the input size of the network
+
+        Arguments:
+            input_size {int}
+        """
+
+        self.input_size = input_size
+
+    def set_num_labels(num_labels):
+        """
+        set the num of labels of output
+        
+        Arguments:
+            num_labels {int}
+        """
+
+        self.num_labels = num_labels
+
+    def set_hidden_size(hidden_size):
+        """
+        set the hidden layer size
+        
+        Arguments:
+            hidden_size {int}
+        """
+        
+        self.hidden_size = hidden_size
     def set_params(self, params):
         """
         set the params
@@ -252,7 +282,7 @@ class NeuralNet():
 
         return J, grad
 
-    def get_cost(self, y, h, minval=0.0000000001):
+    def get_cost(self, y, h, minval=0.0000000000000000000000001):
         """
         get the cost of prediction, the error margin
         
@@ -281,15 +311,16 @@ class NeuralNet():
 
         a1, z2, a2, z3, h = self.feed_forward(self.X, theta1, theta2)  
         y_pred = np.array(np.argmax(h, axis=1))
+
         correct = 0
         for x in xrange(examples):
             if self.Y[x, y_pred[x]] == 1:
                 correct +=1
 
-        accuracy = (correct / examples)  
+        accuracy = (correct / float(examples))
         self.writer.write(type +' accuracy = {0}%'.format(accuracy * 100))
 
-    def predict(x):
+    def predict(self, x):
         """
         predict given a row example
         
@@ -302,7 +333,7 @@ class NeuralNet():
 
         theta1, theta2 = self.reshape_theta(self.params)
         _,_,_,_,h = self.feed_forward(x, theta1, theta2)
-        return h
+        return np.array(np.argmax(h, axis=1))[0,0]
 
     def test(self, step=10): 
         """
