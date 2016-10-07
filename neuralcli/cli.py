@@ -6,7 +6,7 @@ import writer
 writer = writer.Writer()
 
 @click.group()
-def cli():
+def main():
     pass
 
 @click.command(options_metavar='<options>')
@@ -86,6 +86,6 @@ def test(training, x, y, output, lam, maxiter, normalize, step):
     nn.test(step)
 
 
-cli.add_command(test)
-cli.add_command(predict)
-cli.add_command(train)
+main.add_command(test)
+main.add_command(predict)
+main.add_command(train)
