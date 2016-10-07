@@ -41,7 +41,7 @@ class NeuralNet():
         self.maxiter = maxiter
         self.writer = writer
 
-    def set_input_size(input_size):
+    def set_input_size(self, input_size):
         """
         set the input size of the network
 
@@ -51,7 +51,7 @@ class NeuralNet():
 
         self.input_size = input_size
 
-    def set_num_labels(num_labels):
+    def set_num_labels(self, num_labels):
         """
         set the num of labels of output
         
@@ -61,14 +61,14 @@ class NeuralNet():
 
         self.num_labels = num_labels
 
-    def set_hidden_size(hidden_size):
+    def set_hidden_size(self, hidden_size):
         """
         set the hidden layer size
         
         Arguments:
             hidden_size {int}
         """
-        
+
         self.hidden_size = hidden_size
     def set_params(self, params):
         """

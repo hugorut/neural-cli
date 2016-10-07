@@ -34,28 +34,30 @@ def train(x, y, output, lam, maxiter, normalize, verbose):
     nn.accuracy()
 
 @click.command(options_metavar='<options>')
+@click.argument("x", type=click.File('rb'))
 @click.argument("sizei", type=click.INT)
 @click.argument("sizeh", type=click.INT)
 @click.argument("labels", type=click.INT)
 @click.argument("params", type=click.File('rb'))
 @click.option("--normalize", type=click.BOOL, help="Perform normalization on the training set [default true]")
-def predict(sizei, sizeh, labels, params, normalize):
+def predict(x, sizei, sizeh, labels, params, normalize):
     """
-    predict an output with a given row
+    predict an output with a given row. Prints the index of the prediction of the output row.
     
     Arguments:\n
+        [x] the file that holds the 1 * n row example that should be predicted  \n
         [sizei] the size of the input layer that the parameters were trained on \n
         [sizeh] the size of the hidden layer that the parameters were trained on \n
         [labels] the size of the output layer that the parameters were trained on \n
         [params] the file that holds a 1 * n rolled parameter vector \n
     """
 
-    X = np.loadtxt(training, delimiter=",",skiprows=1, dtype="float")
-    Y = np.loadtxt(expected, delimiter=",",skiprows=1, dtype="float")
-
     x = np.loadtxt(x, delimiter=",",skiprows=0, dtype="float")
-    nn = neuralnet.NeuralNet(X=X, Y=Y, writer=writer)
+    nn = neuralnet.NeuralNet(X=None, Y=None, writer=writer, norm=normalize)
 
+    nn.set_input_size(sizei)
+    nn.set_hidden_size(sizeh)
+    nn.set_num_labels(labels)
     nn.set_params(np.loadtxt(params, delimiter=",",skiprows=0, dtype="float"))
     print nn.predict(x[np.newaxis])
 
