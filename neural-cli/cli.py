@@ -89,6 +89,3 @@ def test(training, x, y, output, lam, maxiter, normalize, step):
 cli.add_command(test)
 cli.add_command(predict)
 cli.add_command(train)
-
-if __name__ == '__main__':
-    cli()
