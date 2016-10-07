@@ -2,13 +2,13 @@ from distutils.core import setup
 setup(
   name = 'neural-cli',
   packages = ['neural-cli'],
-  scripts = ['neural-cli'],
-  version = '0.1',
+  scripts = ['neural-cli/neural-cli'],
+  version = '0.2',
   description = 'A command line neural network',
   author = 'Hugo Rut',
   author_email = 'hugorut@gmail.com',
-  url = 'https://github.com/hugorut/neural-cli', # use the URL to the github repo
-  download_url = 'https://github.com/hugorut/neural-cli/tarball/0.1', # I'll explain this in a second
-  keywords = ['machine learning', 'ai', 'neural nework'], # arbitrary keywords
+  url = 'https://github.com/hugorut/neural-cli',
+  download_url = 'https://github.com/hugorut/neural-cli/tarball/0.2', 
+  keywords = ['machine learning', 'ai', 'neural nework'], 
   classifiers = [],
 )
