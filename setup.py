@@ -6,12 +6,12 @@ setup(
   entry_points = {
       "console_scripts": ['neuralcli = neuralcli.cli:main']
       },
-  version = '0.5',
+  version = '1.0',
   description = 'A command line neural network',
   author = 'Hugo Rut',
   author_email = 'hugorut@gmail.com',
   url = 'https://github.com/hugorut/neural-cli',
-  download_url = 'https://github.com/hugorut/neural-cli/tarball/0.5', 
+  download_url = 'https://github.com/hugorut/neural-cli/tarball/1.0', 
   keywords = ['machine learning', 'ai', 'neural nework'], 
   classifiers = [],
 )
