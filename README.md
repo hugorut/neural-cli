@@ -102,6 +102,7 @@ $ neuralcli train ./X.csv ./Y.csv --step=50 --normalize=true
 ```
 
 Neural cli will then run the test sequence printing its progress as it increases the size of the training set.
+
 ![](http://i.imgur.com/TFlhHJN.gif)
 
 After this runs it will then print a plot of the hypothesis error against the size of training set the weights where learned on. Below is an example graph plotted from the iris dataset.
