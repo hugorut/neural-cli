@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 class NeuralNet():
     """The main neural network class for training"""
 
-    def __init__(self, X, Y, writer, output="./params", lam=1, maxiter=250, norm=True):
+    def __init__(self, X, Y, writer, output="./params", lam=1, maxiter=250, norm=False):
         """
         Arguments:
             X {np.ndarray} -- The training set
@@ -40,6 +40,7 @@ class NeuralNet():
         self.params = self.generate_params()
         self.maxiter = maxiter
         self.writer = writer
+        self.minval = 0.000000001
 
     def set_input_size(self, input_size):
         """
@@ -282,7 +283,7 @@ class NeuralNet():
 
         return J, grad
 
-    def get_cost(self, y, h, minval=0.0000000000000000000000001):
+    def get_cost(self, y, h):
         """
         get the cost of prediction, the error margin
         
@@ -290,14 +291,11 @@ class NeuralNet():
             y {np.ndarray} -- The expected output
             h {np.ndarray} -- The prediction array
         
-        Keyword Arguments:
-            minval {number} -- The minimum value that h projection can be [so no log by zero errors] (default: {0.0000000001})
-        
         Returns:
             cos {float64} -- the margin of error with the given weights
         """
-        first_term = np.multiply(-y, np.log(h.clip(minval)))
-        second_term = np.multiply((1 - y), np.log(1 - h.clip(minval)))
+        first_term = np.multiply(-y, np.log(h.clip(self.minval)))
+        second_term = np.multiply((1 - y), np.log(1 - h.clip(self.minval)))
 
         return np.sum(first_term - second_term)
 
@@ -382,7 +380,7 @@ class NeuralNet():
         plt.xlabel("Iteration")
         plt.show()
 
-def split(self, input):
+def split(input):
     """[summary]
     
     [description]

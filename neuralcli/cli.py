@@ -35,41 +35,44 @@ def train(x, y, output, lam, maxiter, normalize, verbose):
 
 @click.command(options_metavar='<options>')
 @click.argument("x", type=click.File('rb'))
-@click.argument("sizei", type=click.INT)
-@click.argument("sizeh", type=click.INT)
 @click.argument("labels", type=click.INT)
 @click.argument("params", type=click.File('rb'))
-@click.option("--normalize", type=click.BOOL, help="Perform normalization on the training set [default true]")
-def predict(x, sizei, sizeh, labels, params, normalize):
+@click.argument("--sizeh", type=click.INT)
+@click.option("--normalize", type=click.BOOL, help="Perform normalization on the training set [default false]")
+def predict(x, params, labels, sizeh, normalize):
     """
     predict an output with a given row. Prints the index of the prediction of the output row.
     
     Arguments:\n
         [x] the file that holds the 1 * n row example that should be predicted  \n
-        [sizei] the size of the input layer that the parameters were trained on \n
         [sizeh] the size of the hidden layer that the parameters were trained on \n
         [labels] the size of the output layer that the parameters were trained on \n
         [params] the file that holds a 1 * n rolled parameter vector \n
     """
 
     x = np.loadtxt(x, delimiter=",",skiprows=0, dtype="float")
+    x = x[np.newaxis];
     nn = neuralnet.NeuralNet(X=None, Y=None, writer=writer, norm=normalize)
 
-    nn.set_input_size(sizei)
-    nn.set_hidden_size(sizeh)
+    input_size = np.shape(x)[1]
+    hidden_size = input_size
+    if sizeh:
+        hidden_size = sizeh
+
+    nn.set_hidden_size(input_size)
+    nn.set_hidden_size(hidden_size)
     nn.set_num_labels(labels)
     nn.set_params(np.loadtxt(params, delimiter=",",skiprows=0, dtype="float"))
-    print nn.predict(x[np.newaxis])
+    print nn.predict(x)
 
 @click.command(options_metavar='<options>')
-@click.option("--lam", type=click.FLOAT, default=1, help="The regularization amount [default 1]")
-@click.option("--maxiter", default=250, type=click.INT, help="The maximum iterations for chosen to minimise the cost function [default 250]")
-@click.option("--output", type=click.File('rb'), help="A file path to save the minimised parameters to")
-@click.option("--normalize", default=True, type=click.BOOL, help="Perform normalization on the training set [default true]")
-@click.option("--step", default=10, type=click.INT, help="The increments that the training will increase the set by [default 10]")
 @click.argument("X", type=click.File('rb'))
 @click.argument("Y", type=click.File('rb'))
-def test(training, x, y, output, lam, maxiter, normalize, step):
+@click.option("--lam", type=click.FLOAT, default=1, help="The regularization amount [default 1]")
+@click.option("--maxiter", default=250, type=click.INT, help="The maximum iterations for chosen to minimise the cost function [default 250]")
+@click.option("--normalize", default=True, type=click.BOOL, help="Perform normalization on the training set [default true]")
+@click.option("--step", default=10, type=click.INT, help="The increments that the training will increase the set by [default 10]")
+def test(x, y, lam, maxiter, normalize, step):
     """Test the given network on the train and validation sets
     
     Arguments:\n
@@ -82,7 +85,7 @@ def test(training, x, y, output, lam, maxiter, normalize, step):
     X = np.loadtxt(x, delimiter=",",skiprows=1, dtype="float")
     Y = np.loadtxt(y, delimiter=",",skiprows=1, dtype="float")
 
-    nn = neuralnet.NeuralNet(X=X, Y=Y, writer=writer, output=output, lam=lam, maxiter=maxiter)
+    nn = neuralnet.NeuralNet(X=X, Y=Y, writer=writer, lam=lam, maxiter=maxiter, norm=normalize)
     nn.test(step)
 
 
