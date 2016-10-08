@@ -2,3 +2,4 @@
 dist/*
 build/*
 neuralcli.egg-info/*
+*.pyc
