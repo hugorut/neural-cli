@@ -1,6 +1,6 @@
 #Command Line Neural Network
 
-Neuralcli provides a simple command line interface to a python implementation of a simple classification neural network. Neuralcli allows a quick way and easy to get instant feedback on a hypothesis or to play around with one of the most use algorithms in machine learning today.
+Neuralcli provides a simple command line interface to a python implementation of a simple classification neural network. Neuralcli allows a quick way and easy to get instant feedback on a hypothesis or to play around with one of the most used algorithms in machine learning today.
 
 ##Installation
 
@@ -9,19 +9,20 @@ Installation of neuralcli is provided through pip, just run:
 pip install neuralcli
 ```
 
-Then run the following `command -v neuralcli` to check that the command has been successfully installed. You may get an error with the installation bundling matlibplot, which when running `neuralcli` will produce an error similar to:
+Then run the following `command -v neuralcli` to check that the executable has been successfully installed. You may get an error with the installation bundling matlibplot, which when running `neuralcli` will produce an output similar to:
 ```
 **RuntimeError**: Python is not installed as a framework
 ```
 
 To fix this issue follow the steps outlined ![here](http://stackoverflow.com/questions/21784641/installation-issue-with-matplotlib-python)
+
 ##Use
 
 Neuralcli comes bundled with three main commands.
 
 ###Train
 
-The train command takes a set of input features along with their expected outputs and performs backpropogation to learn the weights for a neural network. These weights can be saved to an output file to use for prediction later. The command takes the following.
+The train command takes a set of input features along with their expected outputs and performs backpropogation to learn the weights for a neural network. These weights can be saved to an output file to use for classification prediction later. The command takes the following.
 
 **parameters:**
 
@@ -76,7 +77,7 @@ $ neuralcli predict ./x.csv ./params.csv 3
 ```
 
 Neuralcli will now print a prediction in INT form, corresponding to the index of you output labels.
-e.g. `0` will correspond to you first label. 
+e.g. `0` will correspond to you first classification label. 
 
 ###Test
 
