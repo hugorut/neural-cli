@@ -7,6 +7,9 @@ import sys
 from sklearn.preprocessing import normalize
 import matplotlib.pyplot as plt
 
+# supress numpy error warnings so as not to hinder the cli output
+np.seterr(all='ignore')
+
 class NeuralNet():
     """The main neural network class for training"""
 
