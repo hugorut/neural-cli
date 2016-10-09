@@ -37,15 +37,14 @@ def train(x, y, output, lam, maxiter, normalize, verbose):
 @click.argument("x", type=click.File('rb'))
 @click.argument("labels", type=click.INT)
 @click.argument("params", type=click.File('rb'))
-@click.argument("--sizeh", type=click.INT)
+@click.option("--sizeh", type=click.INT, help="the size of the hidden layer that the parameters were trained on")
 @click.option("--normalize", type=click.BOOL, help="Perform normalization on the training set [default false]")
-def predict(x, params, labels, sizeh, normalize):
+def predict(x, labels, params, sizeh, normalize):
     """
     predict an output with a given row. Prints the index of the prediction of the output row.
     
     Arguments:\n
         [x] the file that holds the 1 * n row example that should be predicted  \n
-        [sizeh] the size of the hidden layer that the parameters were trained on \n
         [labels] the size of the output layer that the parameters were trained on \n
         [params] the file that holds a 1 * n rolled parameter vector \n
     """

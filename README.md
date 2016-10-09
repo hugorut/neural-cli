@@ -9,8 +9,12 @@ Installation of neuralcli is provided through pip, just run:
 pip install neuralcli
 ```
 
-Then run the following `command -v neuralcli` to check that the command has been successfully installed.
+Then run the following `command -v neuralcli` to check that the command has been successfully installed. You may get an error with the installation bundling matlibplot, which when running `neuralcli` will produce an error similar to:
+```
+**RuntimeError**: Python is not installed as a framework
+```
 
+To fix this issue follow the steps outlined ![here](http://stackoverflow.com/questions/21784641/installation-issue-with-matplotlib-python)
 ##Use
 
 Neuralcli comes bundled with three main commands.
