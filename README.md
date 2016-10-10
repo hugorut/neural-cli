@@ -14,7 +14,7 @@ Then run the following `command -v neuralcli` to check that the executable has b
 **RuntimeError**: Python is not installed as a framework
 ```
 
-To fix this issue follow the steps outlined ![here](http://stackoverflow.com/questions/21784641/installation-issue-with-matplotlib-python)
+To fix this issue follow the steps outlined [here](http://stackoverflow.com/questions/21784641/installation-issue-with-matplotlib-python)
 
 ##Use
 
