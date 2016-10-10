@@ -1,6 +1,6 @@
 #Command Line Neural Network
 
-Neuralcli provides a simple command line interface to a python implementation of a simple classification neural network. Neuralcli allows a quick way and easy to get instant feedback on a hypothesis or to play around with one of the most used algorithms in machine learning today.
+Neuralcli provides a simple command line interface to a python implementation of a simple classification neural network. Neuralcli allows a quick way and easy to get instant feedback on a hypothesis or to play around with one of the most popular concepts in machine learning today.
 
 ##Installation
 
@@ -9,7 +9,18 @@ Installation of neuralcli is provided through pip, just run:
 pip install neuralcli
 ```
 
-Then run the following `command -v neuralcli` to check that the executable has been successfully installed. You may get an error with the installation bundling matlibplot, which when running `neuralcli` will produce an output similar to:
+If you don't have some of the libraries used, such as `numpy` or `skitlearn` the install make take some time as pip installs all the dependencies. After pip finishes the install run the following `command -v neuralcli` to check that the executable has been successfully added. 
+
+**Troubleshooting**
+
+When you run `neuralcli` for the first time you may get an output similar to below
+```
+/usr/local/lib/python2.7/site-packages/matplotlib/font_manager.py:273: UserWarning: Matplotlib is building the font cache using fc-list. This may take a moment.
+warnings.warn('Matplotlib is building the font cache using fc-list. This may take a moment.')
+```
+This is just a warning from matplotlib, and will be removed the next time you run the command.
+
+Additionally matlibplot may throw another error that will produce an output similar to:
 ```
 **RuntimeError**: Python is not installed as a framework
 ```
