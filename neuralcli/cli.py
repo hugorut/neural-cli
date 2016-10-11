@@ -1,9 +1,10 @@
-import neuralnet
+from __future__ import absolute_import, division, print_function
+from .neuralnet import NeuralNet
 import numpy as np
 import click
-import writer
+from .writer import Writer
 
-writer = writer.Writer()
+writer = Writer()
 
 @click.group()
 def main():
@@ -29,7 +30,7 @@ def train(x, y, output, lam, maxiter, normalize, verbose):
     X = np.loadtxt(x, delimiter=",",skiprows=1, dtype="float")
     Y = np.loadtxt(y, delimiter=",",skiprows=1, dtype="float")
 
-    nn = neuralnet.NeuralNet(X=X, Y=Y, writer=writer, output=output, lam=lam, maxiter=maxiter, norm=normalize)
+    nn = NeuralNet(X=X, Y=Y, writer=writer, output=output, lam=lam, maxiter=maxiter, norm=normalize)
     nn.train(verbose=verbose, save=output)
     nn.accuracy()
 
@@ -51,7 +52,7 @@ def predict(x, labels, params, sizeh, normalize):
 
     x = np.loadtxt(x, delimiter=",",skiprows=0, dtype="float")
     x = x[np.newaxis];
-    nn = neuralnet.NeuralNet(X=None, Y=None, writer=writer, norm=normalize)
+    nn = NeuralNet(X=None, Y=None, writer=writer, norm=normalize)
 
     input_size = np.shape(x)[1]
     hidden_size = input_size
@@ -62,7 +63,7 @@ def predict(x, labels, params, sizeh, normalize):
     nn.set_hidden_size(hidden_size)
     nn.set_num_labels(labels)
     nn.set_params(np.loadtxt(params, delimiter=",",skiprows=0, dtype="float"))
-    print nn.predict(x)
+    writer.write(nn.predict(x))
 
 @click.command(options_metavar='<options>')
 @click.argument("X", type=click.File('rb'))
@@ -84,7 +85,7 @@ def test(x, y, lam, maxiter, normalize, step):
     X = np.loadtxt(x, delimiter=",",skiprows=1, dtype="float")
     Y = np.loadtxt(y, delimiter=",",skiprows=1, dtype="float")
 
-    nn = neuralnet.NeuralNet(X=X, Y=Y, writer=writer, lam=lam, maxiter=maxiter, norm=normalize)
+    nn = NeuralNet(X=X, Y=Y, writer=writer, lam=lam, maxiter=maxiter, norm=normalize)
     nn.test(step)
 
 
