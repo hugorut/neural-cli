@@ -315,7 +315,7 @@ class NeuralNet():
         y_pred = np.array(np.argmax(h, axis=1))
 
         correct = 0
-        for x in xrange(examples):
+        for x in range(examples):
             if self.Y[x, y_pred[x]] == 1:
                 correct +=1
 
