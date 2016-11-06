@@ -50,8 +50,8 @@ def predict(x, labels, params, sizeh, normalize):
         [params] the file that holds a 1 * n rolled parameter vector \n
     """
 
-    x = np.loadtxt(x, delimiter=",",skiprows=0, dtype="float")
-    x = x[np.newaxis];
+    x = np.loadtxt(x, delimiter=",", skiprows=0, dtype="float")
+    x = x[np.newaxis]
     nn = NeuralNet(X=None, Y=None, writer=writer, norm=normalize)
 
     input_size = np.shape(x)[1]
@@ -59,10 +59,10 @@ def predict(x, labels, params, sizeh, normalize):
     if sizeh:
         hidden_size = sizeh
 
-    nn.set_hidden_size(input_size)
+    nn.set_input_size(input_size)
     nn.set_hidden_size(hidden_size)
     nn.set_num_labels(labels)
-    nn.set_params(np.loadtxt(params, delimiter=",",skiprows=0, dtype="float"))
+    nn.set_params(np.loadtxt(params, delimiter=",", skiprows=0, dtype="float"))
     writer.write(nn.predict(x))
 
 @click.command(options_metavar='<options>')

@@ -1,10 +1,7 @@
 from __future__ import absolute_import, division, print_function
 from scipy.optimize import minimize
-from sklearn.preprocessing import OneHotEncoder  
 import numpy as np
-from scipy.io import loadmat 
 import csv
-import sys
 from sklearn.preprocessing import normalize
 import matplotlib.pyplot as plt
 
@@ -37,7 +34,7 @@ class NeuralNet():
 
         self.num_labels = np.shape(Y)[1]
         self.input_size = np.shape(X)[1]
-        self.hidden_size = np.shape(X)[1]  
+        self.hidden_size = np.shape(X)[1]
 
         self.lam = lam
         self.output = output
@@ -59,7 +56,7 @@ class NeuralNet():
     def set_num_labels(self, num_labels):
         """
         set the num of labels of output
-        
+
         Arguments:
             num_labels {int}
         """
@@ -134,7 +131,8 @@ class NeuralNet():
 
     def generate_params(self):
         """
-        generate a random sequence of weights for the parameters of the neural network
+        generate a random sequence of weights for the 
+        parameters of the neural network
 
         Returns:
             np.ndarray
@@ -192,7 +190,6 @@ class NeuralNet():
             theta1 {np.ndarray}
             theta2 {np.ndarray}
         """
-
         theta1 = np.matrix(np.reshape(params[:self.hidden_size * (self.input_size + 1)], (self.hidden_size, (self.input_size + 1))))
         theta2 = np.matrix(np.reshape(params[self.hidden_size * (self.input_size + 1):], (self.num_labels, (self.hidden_size + 1))))
 
@@ -317,7 +314,7 @@ class NeuralNet():
         correct = 0
         for x in range(examples):
             if self.Y[x, y_pred[x]] == 1:
-                correct +=1
+                correct += 1
 
         accuracy = (correct / float(examples))
         self.writer.write(type +' accuracy = {0}%'.format(accuracy * 100))
@@ -337,7 +334,7 @@ class NeuralNet():
         _,_,_,_,h = self.feed_forward(x, theta1, theta2)
         return np.array(np.argmax(h, axis=1))[0,0]
 
-    def test(self, step=10): 
+    def test(self, step=10):
         """
         run a diagnostic check on the given data set and expected output. This method plots the the margin of prediction
         error against the increase in size of training examples. This can be useful to determine what is going wrong 
