@@ -84,7 +84,7 @@ The prediction command takes a set of learned weights and a given input to predi
 **example:**
 
 ```
-$ neuralcli predict ./x.csv ./params.csv 3 
+$ neuralcli predict ./x.csv 3 ./params.csv 
 ```
 
 Neuralcli will now print a prediction in INT form, corresponding to the index of you output labels.
