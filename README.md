@@ -1,8 +1,8 @@
-#Command Line Neural Network
+# Command Line Neural Network
 
 Neuralcli provides a simple command line interface to a python implementation of a simple classification neural network. Neuralcli allows a quick way and easy to get instant feedback on a hypothesis or to play around with one of the most popular concepts in machine learning today.
 
-##Installation
+## Installation
 
 Installation of neuralcli is provided through pip, just run:
 ```
@@ -31,7 +31,7 @@ To fix this issue follow the steps outlined [here](http://stackoverflow.com/ques
 
 Neuralcli comes bundled with three main commands.
 
-###Train
+### Train
 
 The train command takes a set of input features along with their expected outputs and performs backpropogation to learn the weights for a neural network. These weights can be saved to an output file to use for classification prediction later. The command takes the following.
 
@@ -62,7 +62,7 @@ Once you run the train command the neural network will intialize and begin to le
 
 ![](http://i.imgur.com/EqPJD2s.gif)
 
-###Predict
+### Predict
 
 The prediction command takes a set of learned weights and a given input to predict a an ouput. The learned weights are loaded into the neural network by providing an file which holds them in a rolled 1 * n vector shape. In order for the predict command to work correctly these parameters need to be unrolled and therefore you need to provide the sizes of the input layer, hidden layer, and output labels that you wish to unroll the 
 
@@ -90,7 +90,7 @@ $ neuralcli predict ./x.csv 3 ./params.csv
 Neuralcli will now print a prediction in INT form, corresponding to the index of you output labels.
 e.g. `0` will correspond to you first classification label. 
 
-###Test
+### Test
 
 The test command gives some primitive feedback about the correctness of your hypothesis by running a diagnostic check on the given data set and expected output. This method plots the the margin of prediction error against the increase in size of training examples. This can be useful to determine what is going wrong with your hypothesis, i.e. whether it is underfitting or overfitting the training set.
 
