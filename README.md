@@ -27,7 +27,7 @@ Additionally matlibplot may throw another error that will produce an output simi
 
 To fix this issue follow the steps outlined [here](http://stackoverflow.com/questions/21784641/installation-issue-with-matplotlib-python)
 
-##Use
+## Use
 
 Neuralcli comes bundled with three main commands.
 
